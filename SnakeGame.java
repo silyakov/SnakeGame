@@ -10,6 +10,7 @@ public class SnakeGame extends Game {
     private Snake snake;
     private int turnDelay; //переменная для установки продолжительности хода
     private Apple apple;// В классе SnakeGame должно существовать приватное поле Apple apple
+    private boolean isGameStopped;//Для хранения состояния игры нам понадобится переменная. В классе SnakeGame должно существовать приватное поле boolean isGameStopped.
 
     public void initialize() {
 
@@ -34,7 +35,8 @@ public class SnakeGame extends Game {
 
     private void createGame() {
 
-        snake = new Snake(WIDTH/2, HEIGHT/2); // создаем новую змею в центре игрового поля
+        isGameStopped = false;//Когда игра проиграна, её нужно остановить и вывести сообщение об этом игроку. т.е. isGameStopped = true; а пока она false
+        snake = new Snake(WIDTH / 2, HEIGHT / 2); // создаем новую змею в центре игрового поля
         turnDelay = 300; // установили скорость 300 мс/ход
 //apple = new Apple (5,5);//apple необходимо инициализировать новым объектом типа Apple с параметрами 5, 5 перед вызовом метода drawScene()
         createNewApple();//должен вызываться метод createNewApple() перед методом drawScene()
@@ -53,16 +55,17 @@ public class SnakeGame extends Game {
         apple.draw(this);//В методе drawScene() необходимо вызвать у apple метод draw(Game) после отрисовки змеи. В качестве параметра передай в метод this.
 
 
-
     }
 
     @Override
     public void onTurn(int step) {
         snake.move(apple);//Теперь в качестве аргумента он должен принимать яблоко, и если окажется, что змейка "съела" яблоко,
-                            // состояние яблока должно устанавливаться в "неживое", а размер змейки — увеличиваться на 1 элемент.
+        // состояние яблока должно устанавливаться в "неживое", а размер змейки — увеличиваться на 1 элемент.
         if (apple.isAlive == false) //В методе onTurn() перед вызовом метода drawScene(), если apple.isAlive == false,
-                                    // необходимо вызвать метод createNewApple().
+            // необходимо вызвать метод createNewApple().
             createNewApple();
+        if (snake.isAlive == false) //Если змея мертвая то вызывается метод GameOver и игра останавливается
+            gameOver();
         drawScene();
     }
 
@@ -90,6 +93,14 @@ public class SnakeGame extends Game {
         apple = new Apple(x, y);//должен создаваться новый объект типа Apple. В качестве параметров передай результаты двух вызовов метода getRandomNumber(int).
 
 
+    }
+
+// Когда игра проиграна, её нужно остановить и вывести сообщение об этом игроку.
+    private void gameOver() { // команды, которые выполняются при остановке игры (проигрыше)
+
+        stopTurnTimer();
+        isGameStopped = true;
+        showMessageDialog(Color.NONE, "GAME OVER", Color.BROWN, 75);
     }
 
 }

@@ -84,13 +84,19 @@ public class Snake extends GameObject {
             {
                 apple.isAlive = false;// В методе move(Apple), если координаты новой головы змеи совпадают с координатами яблока,
                 // необходимо установить яблоку isAlive=false и не удалять хвост змеи.
+
                 snakeParts.add(0, newHead);//В методе move() результат вызова метода createNewHead() необходимо добавить в snakeParts на позицию
                 // с индексом 0
 
             } else {
-            snakeParts.add(0, newHead);
-            removeTail();//В методе move() класса Snake после создания новой головы змеи должен вызываться метод removeTail()
-        }
+            boolean collisionCheck = checkCollision(newHead);//
+            if (collisionCheck == true)
+                isAlive = false;//Также в методе move(Apple) добавь проверку на столкновения новой головы и тела.
+            else {
+                snakeParts.add(0, newHead);
+                removeTail();//В методе move() класса Snake после создания новой головы змеи должен вызываться метод removeTail()
+                }
+            }
 
 
     }
@@ -128,6 +134,19 @@ public class Snake extends GameObject {
         snakeParts.remove(lastSnakeElement-1);
         System.out.println("Size after element removed" + snakeParts.size());
 
+    }
+
+    public boolean checkCollision(GameObject snake) { //Метод checkCollision(GameObject) должен возвращать true, если координаты объекта,
+                                                    // пришедшего параметром, совпали с координатами одного из элементов змеи (список snakeParts)
+        boolean snakeCollided = false;
+
+        for (GameObject part : snakeParts) {
+            if (part.x == snake.x && part.y == snake.y) {
+                snakeCollided = true;
+            }
+        }
+
+        return snakeCollided;
     }
 
 }
